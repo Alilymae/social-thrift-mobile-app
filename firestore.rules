@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Validation helpers
+    function isValidUser(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 100
+        && data.email is string && data.email.size() <= 100;
+    }
+
+    function isValidWeight(data) {
+      return data.likes is number && data.likes >= 0
+        && data.comments is number && data.comments >= 0;
+    }
+
+    function isValidOutfit(data) {
+      return data.userId == request.auth.uid
+        && data.userName is string && data.userName.size() <= 100
+        && data.image is string && data.image.size() <= 1048576
+        && (data.caption == null || (data.caption is string && data.caption.size() <= 500))
+        && data.likes is number && data.likes >= 0
+        && data.comments is number && data.comments >= 0;
+    }
+
+    function isValidWardrobeItem(data) {
+      return data.userId == request.auth.uid
+        && data.name is string && data.name.size() <= 100
+        && data.image is string && data.image.size() <= 1048576;
+    }
+
+    function isValidProduct(data) {
+      return data.userId == request.auth.uid
+        && data.name is string && data.name.size() <= 100
+        && data.price is number && data.price >= 0
+        && data.image is string && data.image.size() <= 1048576
+        && data.seller is string && data.seller.size() <= 100
+        && (data.description == null || (data.description is string && data.description.size() <= 1000));
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming())
+        && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'image', 'sustainabilityScore', 'upcyclePoints', 'carbonOffset', 'itemsSaved', 'earnings']);
+    }
+    
+    // Wardrobe
+    match /wardrobe/{itemId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isSignedIn() && isValidWardrobeItem(incoming());
+      allow delete: if isOwner(existing().userId);
+    }
+    
+    // Cart
+    match /cart/{cartId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow delete: if isOwner(existing().userId);
+    }
+    
+    // Fit Checks / Outfits
+    match /outfits/{outfitId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidOutfit(incoming()) 
+        && incoming().likes == 0 && incoming().comments == 0;
+      allow update: if (isOwner(existing().userId) && isValidOutfit(incoming()))
+        || (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['likes', 'comments']));
+      allow delete: if isOwner(existing().userId);
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isSignedIn() && isValidProduct(incoming());
+      allow update: if isOwner(existing().userId) && isValidProduct(incoming());
+      allow delete: if isOwner(existing().userId);
+    }
+  }
+}

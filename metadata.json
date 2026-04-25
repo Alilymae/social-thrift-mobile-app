@@ -1,0 +1,6 @@
+{
+  "name": "Social Thrift",
+  "description": "A vintage-themed sustainable fashion marketplace with AI-powered upcycling tools and an interactive wardrobe styler.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["AI Upcycling", "Virtual Styler", "Sustainable Marketplace"]
+}

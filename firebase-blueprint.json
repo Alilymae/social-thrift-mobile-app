@@ -1,0 +1,92 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with sustainability metrics",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "image": { "type": "string" },
+        "sustainabilityScore": { "type": "number" },
+        "upcyclePoints": { "type": "number" },
+        "carbonOffset": { "type": "number" },
+        "itemsSaved": { "type": "number" },
+        "earnings": { "type": "number" }
+      },
+      "required": ["id", "name", "email"]
+    },
+    "Outfit": {
+      "title": "Outfit",
+      "description": "A fit check post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userImage": { "type": "string" },
+        "image": { "type": "string" },
+        "caption": { "type": "string" },
+        "items": { "type": "array", "items": { "type": "string" } },
+        "likes": { "type": "number" },
+        "comments": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "userName", "image"]
+    },
+    "WardrobeItem": {
+      "title": "WardrobeItem",
+      "description": "An item in a user's digital wardrobe",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "image": { "type": "string" },
+        "category": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "name", "image"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "A marketplace item for sale",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "image": { "type": "string" },
+        "category": { "type": "string" },
+        "seller": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "name", "price", "image", "seller"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Users collection"
+    },
+    "/outfits/{outfitId}": {
+      "schema": "Outfit",
+      "description": "Fit checks / Outfits collection"
+    },
+    "/wardrobe/{itemId}": {
+      "schema": "WardrobeItem",
+      "description": "Individual wardrobe items"
+    },
+    "/cart/{cartId}": {
+      "schema": "Product",
+      "description": "User shopping cart items"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Marketplace products"
+    }
+  }
+}

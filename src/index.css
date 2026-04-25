@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@100..900&family=Scheherazade+New:wght@400;500;600;700&family=Inter:wght@100..900&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Requested Fonts Mapping */
+  --font-display: "Tan Ashford", "Fraunces", "Georgia", serif;
+  --font-serif: "Scheherazade New", serif;
+  --font-sans: "Maleah", "Inter", "Helvetica", sans-serif;
+  --font-complementary: "Maleah", "Cormorant Garamond", serif;
+
+  --color-pink: #FFACC1;
+  --color-dark-green: #024A34;
+  --color-medium-green: #3D7337;
+  --color-beige: #F5E8D5;
+  --color-orange: #FFBD59;
+  --color-yellow: #F7D550;
+  --color-dark-gray: #383A43;
+  --color-off-white: #FBF6EE;
+  --color-purple: #8D77AB;
+  --color-light-purple: #B1A1ED;
+  
+  --color-cream: #F5E8D5;
+  --color-paper: #FBF6EE;
+  --color-ink: #383A43;
+  --color-gold: #F7D550;
+  --color-lavender: #B1A1ED;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-serif antialiased;
+  }
+  
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+}
+
+/* Custom Vintage Styles */
+.vintage-grid {
+  background-image: radial-gradient(circle, #383A43 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.1;
+}
+
+.hard-shadow {
+  box-shadow: 4px 4px 0 #383A43;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.markdown-body ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+.markdown-body p {
+  margin-bottom: 0.5rem;
+}
+.markdown-body strong {
+  font-weight: 700;
+}
